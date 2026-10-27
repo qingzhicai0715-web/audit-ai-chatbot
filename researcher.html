@@ -1,0 +1,101 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="robots" content="noindex, nofollow" />
+    <title>Researcher Panel</title>
+    <link rel="stylesheet" href="/styles.css" />
+    <style>
+      body { background: #fafafa; }
+      .wrap { max-width: 1240px; margin: 0 auto; padding: 32px 20px 60px; }
+      h1 { font-size: 26px; margin: 0 0 4px; }
+      .lead { color: var(--ink-soft); margin: 0 0 28px; }
+      .panel { background: #fff; border: 1px solid var(--line); border-radius: 14px; padding: 20px 22px; margin-bottom: 20px; }
+      .panel h2 { font-size: 17px; margin: 0 0 12px; }
+      table { width: 100%; border-collapse: collapse; font-size: 15px; }
+      td, th { text-align: left; padding: 9px 8px; border-top: 1px solid var(--line); vertical-align: top; }
+      th { font-weight: 600; color: var(--ink-soft); border-top: 0; font-size: 13px; text-transform: uppercase; letter-spacing: .04em; }
+      code { font-family: ui-monospace, Consolas, monospace; font-size: 13.5px; background: #f1f1f3; padding: 2px 6px; border-radius: 6px; word-break: break-all; }
+      .copy { font: inherit; font-size: 13px; padding: 4px 10px; border-radius: 8px; border: 1px solid #d4d4d8; background: #fff; cursor: pointer; }
+      .previews { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+      .preview { background: #fff; border: 1px solid var(--line); border-radius: 14px; overflow: hidden; }
+      .preview-head { display: flex; justify-content: space-between; align-items: center; padding: 12px 16px; border-bottom: 1px solid var(--line); font-weight: 600; font-size: 15px; }
+      .preview iframe { width: 100%; height: 640px; border: 0; display: block; }
+      .export { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; }
+      .export input { font: inherit; font-size: 15px; padding: 9px 12px; border: 1px solid #d4d4d8; border-radius: 10px; min-width: 220px; }
+      .small { font-size: 14px; color: var(--ink-soft); }
+      @media (max-width: 900px) { .previews { grid-template-columns: 1fr; } }
+    </style>
+  </head>
+  <body>
+    <div class="wrap">
+      <h1>Audit AI Chatbot — Researcher Panel</h1>
+      <p class="lead">Two conditions with identical content and timing. Only the reveal of the recommendation differs.</p>
+
+      <div class="panel">
+        <h2>Participant links</h2>
+        <table>
+          <tr><th>Condition</th><th>Link</th><th></th></tr>
+          <tr><td>A · Automatic</td><td><code data-path="/a"></code></td><td><button class="copy">Copy</button></td></tr>
+          <tr><td>B · On demand (click)</td><td><code data-path="/b"></code></td><td><button class="copy">Copy</button></td></tr>
+          <tr><td>Random 50/50</td><td><code data-path="/random"></code></td><td><button class="copy">Copy</button></td></tr>
+        </table>
+        <p class="small" style="margin:14px 0 0">
+          Optional parameters: <code>?pid=123</code> stores a participant ID ·
+          <code>&amp;return=https://…</code> shows a Continue button that sends the participant back to your survey with
+          <code>ai_cond</code>, <code>ai_viewed</code>, <code>ai_click_ms</code>, <code>ai_sid</code> appended ·
+          <code>&amp;test=1</code> pilot mode (nothing logged).
+        </p>
+      </div>
+
+      <div class="previews">
+        <div class="preview">
+          <div class="preview-head">Condition A · Automatic <button class="copy" data-reload="fa">Replay</button></div>
+          <iframe id="fa" src="/a?test=1" title="Condition A preview"></iframe>
+        </div>
+        <div class="preview">
+          <div class="preview-head">Condition B · On demand <button class="copy" data-reload="fb">Replay</button></div>
+          <iframe id="fb" src="/b?test=1" title="Condition B preview"></iframe>
+        </div>
+      </div>
+
+      <div class="panel" style="margin-top:20px">
+        <h2>Download data</h2>
+        <div class="export">
+          <input id="key" type="password" placeholder="ADMIN_KEY" autocomplete="off" />
+          <button class="pill-btn" data-type="sessions" style="padding:10px 20px;font-size:15px">Sessions CSV (one row per participant)</button>
+          <button class="pill-btn" data-type="events" style="padding:10px 20px;font-size:15px;background:#55565b">All events CSV</button>
+        </div>
+        <p class="small" style="margin:12px 0 0">Previews above run in test mode and are not logged. Export needs the <code>ADMIN_KEY</code> variable set on Railway.</p>
+      </div>
+    </div>
+
+    <script>
+      document.querySelectorAll('code[data-path]').forEach(function (c) {
+        c.textContent = location.origin + c.dataset.path;
+      });
+      document.querySelectorAll('tr .copy').forEach(function (b) {
+        b.addEventListener('click', function () {
+          var text = b.closest('tr').querySelector('code').textContent;
+          navigator.clipboard.writeText(text).then(function () {
+            b.textContent = 'Copied';
+            setTimeout(function () { b.textContent = 'Copy'; }, 1200);
+          });
+        });
+      });
+      document.querySelectorAll('[data-reload]').forEach(function (b) {
+        b.addEventListener('click', function () {
+          var f = document.getElementById(b.dataset.reload);
+          f.src = f.src;
+        });
+      });
+      document.querySelectorAll('[data-type]').forEach(function (b) {
+        b.addEventListener('click', function () {
+          var key = document.getElementById('key').value.trim();
+          location.href = '/api/export?type=' + b.dataset.type + '&key=' + encodeURIComponent(key);
+        });
+      });
+    </script>
+  </body>
+</html>

@@ -1,0 +1,44 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="robots" content="noindex, nofollow" />
+    <title>Audit AI Assistant</title>
+    <link rel="stylesheet" href="/styles.css" />
+  </head>
+  <body>
+    <div class="app">
+      <header class="topbar">
+        <span class="bot-icon" aria-hidden="true"></span>
+        <div class="topbar-text">
+          <div class="topbar-title" id="assistant-name">Audit AI Assistant</div>
+          <div class="topbar-sub" id="assistant-sub"></div>
+        </div>
+        <span class="test-badge" id="test-badge" hidden>TEST MODE · not logged</span>
+      </header>
+
+      <main class="chat" id="chat" aria-live="polite"></main>
+
+      <footer class="composer" id="composer">
+        <textarea id="request" rows="2" readonly aria-label="Message to the AI assistant"></textarea>
+        <button class="send-btn" id="send" type="button" aria-label="Send">
+          <svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true">
+            <path d="M4 12l16-8-6 16-2.5-6.5L4 12z" fill="currentColor" />
+          </svg>
+        </button>
+      </footer>
+
+      <div class="continue-bar" id="continue-bar" hidden>
+        <button class="pill-btn" id="continue" type="button">Continue</button>
+      </div>
+    </div>
+
+    <div class="error" id="error" hidden>
+      This link is missing its condition. Use <code>/a</code> or <code>/b</code>.
+    </div>
+
+    <script src="/config.js"></script>
+    <script src="/app.js"></script>
+  </body>
+</html>
